@@ -45,27 +45,556 @@
         </dependency>
     </dependencies>
 
+ <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>${maven.repository.url}</url>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <id>jboss-enterprise-maven-repository</id>
+            <name>JBoss Enterprise Maven Repository</name>
+            <url>${maven.redhat.repository.url}</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jboss-public-repository-group</id>
+            <name>JBoss Public Repository Group</name>
+            <url>${maven.repository.url}</url>
+        </pluginRepository>
+        <pluginRepository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jboss-enterprise-maven-repository</id>
+            <name>JBoss Enterprise Maven Repository</name>
+            <url>${maven.redhat.repository.url}</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
-        <!-- Set the name of the war, used as the context root when the app 
-            is deployed -->
+        <!-- Set the name of the WAR, used as the context root when the app is deployed. -->
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${version.com.mycyla.license}</version>
                 <configuration>
-                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <header>${basedir}/dist/license.txt</header>
+                    <aggregate>true</aggregate>
+                    <strictCheck>true</strictCheck>
+                    <excludes>
+                        <exclude>target/**</exclude>
+                        <exclude>.clover/**</exclude>
+                        <exclude>**/*.sql</exclude>
+                        <exclude>**/LICENSE*</exclude>
+                        <exclude>**/license*</exclude>
+                        <!-- Javascrip Libraries -->
+                        <exclude>**/jquery*</exclude>
+                        <exclude>**/angular*</exclude>
+                        <exclude>**/qunit*</exclude>
+                        <exclude>**/backbone*</exclude>
+                        <exclude>**/lodash*</exclude>
+                        <exclude>**/modernizr*</exclude>
+                        <exclude>**/yepnope*</exclude>
+                        <exclude>**/mobile-nav*</exclude>
+                        <!--Other libraries -->
+                        <exclude>**/*glyphicons*/**</exclude>
+                        <exclude>**/*cordova*/**</exclude>
+                    </excludes>
+                    <encoding>UTF-8</encoding>
+                    <headerDefinitions>
+                        <headerDefinition>dist/headerdefinition.xml</headerDefinition>
+                    </headerDefinitions>
                 </configuration>
             </plugin>
-            <!-- JBoss AS plugin to deploy war -->
             <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>${version.jboss.maven.plugin}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>${version.org.asciidoctor.asciidoctor-maven-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.wildfly.maven.plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>${version.ejb.plugin}</version>
+                    <configuration>
+                        <!-- Tell Maven we are using EJB -->
+                        <ejbVersion>3.2</ejbVersion>
+                    </configuration>
+                </plugin>
+                <!-- Checkstyle -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${version.checkstyle.plugin}</version>
+                    <configuration>
+                        <configLocation>wildfly-checkstyle/checkstyle.xml</configLocation>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <sourceDirectories>
+                            <directory>${project.build.sourceDirectory}</directory>
+                        </sourceDirectories>
+                        <resourceIncludes>**/*.properties,**/*.xml</resourceIncludes>
+                        <includeTestResources>true</includeTestResources>
+                        <includeResources>true</includeResources>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <failOnViolation>true</failOnViolation>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.wildfly.checkstyle</groupId>
+                            <artifactId>wildfly-checkstyle-config</artifactId>
+                            <version>${version.org.wildfly.checkstyle-config}</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>check-style</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>checkstyle</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            com.redhat.rcm.maven.plugin
+                                        </groupId>
+                                        <artifactId>
+                                            buildmetadata-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.7.0,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>
+                                                provide-buildmetadata
+                                            </goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.commonjava.maven.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            project-sources-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [0.3,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>archive</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.jboss.ws.plugins
+                                        </groupId>
+                                        <artifactId>
+                                            jaxws-tools-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.2.0.Final,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>wsconsume</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
-  
+
+    <profiles>
+        <profile>
+            <!-- All the modules that require nothing but JBoss Enterprise
+                    Application Platform or JBoss EAP -->
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>default</name>
+                    <value>!disabled</value>
+                </property>
+            </activation>
+            <modules>
+                <!-- All the modules that require nothing but JBoss Enterprise
+                    Application Platform or JBoss EAP -->
+
+                <module>oom-gen</module>
+          
+            </modules>
+        </profile>
+        <profile>
+            <!-- All the quickstarts that require Postgres to be running -->
+            <id>requires-postgres</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>requires-postgres</name>
+                    <value>!disabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jts</module>
+            </modules>
+        </profile>
+        <profile>
+            <!-- All the quickstarts that have weird requirements around deployment that Maven can't handle -->
+            <id>complex-dependencies</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>complex-dependencies</name>
+                    <value>!disabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>ejb-remote</module>
+                <module>resteasy-jaxrs-client</module>
+                <module>jts</module>
+            </modules>
+        </profile>
+        <profile>
+            <!-- All the quickstarts that require the "standalone-full" profile
+                to be in use -->
+            <id>requires-full</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>requires-full</name>
+                    <value>!disabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>helloworld-mbean</module>
+                <module>helloworld-mdb</module>
+                <module>helloworld-mdb-propertysubstitution</module>
+                <module>jta-crash-rec</module>
+            </modules>
+        </profile>
+        <profile>
+            <!-- All the quickstarts that require the xts to be enabled -->
+            <id>requires-xts</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>requires-xts</name>
+                    <value>!disabled</value>
+                </property>
+            </activation>
+            <modules>
+                <module>wsat-simple</module>
+                <module>wsba-coordinator-completion-simple</module>
+                <module>wsba-participant-completion-simple</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>functional-tests</id>
+            <modules>
+                <module>contacts-jquerymobile/functional-tests</module>
+                <module>helloworld-html5/functional-tests</module>
+                <module>kitchensink-angularjs/functional-tests</module>
+                <module>spring-greeter/functional-tests</module>
+                <module>spring-kitchensink-basic/functional-tests</module>
+                <module>spring-kitchensink-springmvctest/functional-tests</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests in your JBoss EAP instance.
+                 This profile will start a new JBoss EAP instance, and execute the test, shutting it down when done.
+                 Run with: mvn clean verify -Parq-managed -->
+            <id>arq-managed</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${version.failsafe.plugin}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!-- An optional Arquillian testing profile that executes tests in a remote JBoss EAP instance.
+                 Run with: mvn clean verify -Parq-remote -->
+            <id>arq-remote</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.wildfly.arquillian</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${version.failsafe.plugin}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>docs</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <!-- not real maven projects, but here for centralized mgmt and docs -->
+                <module>jts-distributed-crash-rec</module>
+                <module>messaging-clustering</module>
+            </modules>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.maven.plugins</groupId>
+                        <artifactId>quickstart-documentation-plugin</artifactId>
+                        <version>${version.org.wildfly.quickstarts.documentation.plugin}</version>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <rootDirectory>.</rootDirectory>
+                            <targetDocument>README.adoc</targetDocument>
+                            <includeOpenshift>true</includeOpenshift>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate-toc</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>table-of-contents</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <configuration>
+                            <backend>html5</backend>
+                            <attributes>
+                                <artifactId>${project.artifactId}</artifactId>
+                            </attributes>
+                            <resources>
+                                <resource>
+                                    <directory>.</directory>
+                                    <excludes>
+                                        <exclude>**/*</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                            <doctype>article</doctype>
+                            <sourceDirectory>.</sourceDirectory>
+                            <sourceDocumentName>README.adoc</sourceDocumentName>
+                            <outputFile>README.html</outputFile>
+                            <outputDirectory>.</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>output-html</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>process-asciidoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>adoc</id>
+            <activation>
+                <file>
+                    <missing>README.adoc</missing>
+                </file>
+            </activation>
+            <properties>
+                <asciidoctor.skip>true</asciidoctor.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>dist</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <modules>
+                <module>dist</module>
+            </modules>
+        </profile>
+        <profile>
+            <!-- When built in OpenShift the 'openshift' profile will be
+                used when invoking mvn. -->
+            <!-- Use this profile for any OpenShift specific customization
+                your app will ne    ed. -->
+            <!-- By default that is to put the resulting archive into the
+                'deployments' folder. -->
+            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+            <id>openshift</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <version>${version.war.plugin}</version>
+                        <configuration>
+                            <warName>ROOT</warName>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>publish-rh-developer</id>
+            <activation>
+                <property>
+                    <name>publish-developer-website</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.maven.plugins</groupId>
+                        <artifactId>quickstart-documentation-plugin</artifactId>
+                        <version>${version.org.wildfly.quickstarts.documentation.plugin}</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>drupal-push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <drupalUrl>${jboss.developer.drupal.url}</drupalUrl>
+                            <serverName>rh-drupal</serverName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>publish-rh-developer-prod</id>
+            <activation>
+                <property>
+                    <name>publish-developer-website</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <jboss.developer.drupal.url>http://rhdp-drupal.redhat.com/</jboss.developer.drupal.url>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
