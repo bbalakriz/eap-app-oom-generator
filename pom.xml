@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.redhat</groupId>
+    <artifactId>oom-gen</artifactId>
+    <version>1.0.0</version>
+
+    <packaging>war</packaging>
+    <name>OOM Generator</name>
+    <description>OOM generator when the available heap is less than 100 MB</description>
+
+    <dependencies>
+
+        <!-- Import the CDI API, we use provided scope as the API is included in JBoss EAP -->
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <version>2.0.2.redhat-00004</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the Common Annotations API (JSR-250), we use provided scope
+            as the API is included in JBoss EAP -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+            <version>2.0.1.Final-redhat-00001</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss EAP -->
+        <dependency>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+            <version>2.0.1.Final-redhat-00001</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+  
+
+</project>
