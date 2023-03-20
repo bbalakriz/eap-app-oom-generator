@@ -228,6 +228,7 @@
                         <version>${version.war.plugin}</version>
                         <configuration>
                             <warName>ROOT</warName>
+				<failOnMissingWebXml>false</failOnMissingWebXml>
                         </configuration>
                     </plugin>
                     <plugin>
