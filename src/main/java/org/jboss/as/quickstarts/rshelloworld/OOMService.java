@@ -18,7 +18,7 @@ public class OOMService {
                 int index = 1;
 
                 while (index < loop) {
-                    byte[] b = new byte[10 * 1024 * 1024]; // 10MB byte object
+                    byte[] b = new byte[100 * 1024 * 1024]; // 100MB byte object
                     list.add(b);
                     Runtime rt = Runtime.getRuntime();
                     System.out.printf("[%3s] Available heap memory: %s%n", index++, rt.freeMemory());
