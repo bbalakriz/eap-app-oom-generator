@@ -14,14 +14,14 @@ public class OOMGenerator {
     @Path("/json")
     @Produces({ "application/json" })
     public String getHelloWorldJSON() {
-        return "{\"result\":\"" + oomService.generateOOM("World") + "\"}";
+        return "{\"result\":\"" + oomService.generateOOM(10) + "\"}";
     }
 
     @GET
     @Path("/xml")
     @Produces({ "application/xml" })
     public String getHelloWorldXML() {
-        return "<xml><result>" + oomService.generateOOM("World") + "</result></xml>";
+        return "<xml><result>" + oomService.generateOOM(10) + "</result></xml>";
     }
 
 }
