@@ -1,5 +1,5 @@
 
-package org.jboss.as.quickstarts.rshelloworld;
+package com.redhat.oom;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
 public class OOMService {
 
     String generateOOM(int loop, int objectSize) {
-        generate(loop);
+        generate(loop, objectSize);
         return "Started";
     }
 
@@ -20,9 +20,9 @@ public class OOMService {
                 while (index < loop) {
                     byte[] b = new byte[objectSize * 1024 * 1024]; // 100MB byte object
                     list.add(b);
+
                     Runtime rt = Runtime.getRuntime();
-                    System.out.println("[%3s] Available heap memory: %s%n", index++, rt.freeMemory());
-                    index = index + 1;
+                    System.out.printf("[%3s] Available heap memory: %s%n", index++, rt.freeMemory());
                 }
             }
         });

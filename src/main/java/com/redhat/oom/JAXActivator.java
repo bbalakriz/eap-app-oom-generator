@@ -1,5 +1,5 @@
 
-package org.jboss.as.quickstarts.rshelloworld;
+package com.redhat.oom;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

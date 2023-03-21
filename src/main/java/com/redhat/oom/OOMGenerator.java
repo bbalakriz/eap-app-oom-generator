@@ -1,4 +1,4 @@
-package org.jboss.as.quickstarts.rshelloworld;
+package com.redhat.oom;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
