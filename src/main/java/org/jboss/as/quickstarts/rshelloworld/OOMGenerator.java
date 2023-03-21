@@ -5,23 +5,25 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import javax.ws.rs.QueryParam;
+
 @Path("/")
 public class OOMGenerator {
     @Inject
     OOMService oomService;
 
     @GET
-    @Path("/json")
+    @Path("/load")
     @Produces({ "application/json" })
-    public String getHelloWorldJSON() {
-        return "{\"result\":\"" + oomService.generateOOM(10) + "\"}";
+    public String loadHugeDataIntoHeap(@QueryParam("count") int count, @QueryParam("objectSize") int objectSize) {
+        return "{\"result\":\"" + oomService.generateOOM(count, objectSize) + "\"}";
     }
 
-    @GET
-    @Path("/xml")
-    @Produces({ "application/xml" })
-    public String getHelloWorldXML() {
-        return "<xml><result>" + oomService.generateOOM(10) + "</result></xml>";
-    }
+    // @GET
+    // @Path("/xml")
+    // @Produces({ "application/xml" })
+    // public String getHelloWorldXML() {
+    // return "<xml><result>" + oomService.generateOOM(10) + "</result></xml>";
+    // }
 
 }
